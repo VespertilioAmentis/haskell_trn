@@ -11,6 +11,7 @@ fibacc acc prev n | n > 0 = fibacc (acc + prev) acc (n - 1)
     seqA 0 = 1
     seqA 1 = 2
     seqA 2 = 3
+    seqA n = seqA (n - 1) + seqA (n - 2) - 2 * seqA (n - 3)
 -}
 seqA n  | n < 0 = error "n must be positive"
         | n < 3 = n + 1
@@ -23,5 +24,3 @@ seqA n  | n < 0 = error "n must be positive"
                                         k2
                                         (n - 1)
             in helper 3 2 1 n
-
--- seqA n = seqA (n - 1) + seqA (n - 2) - 2 * seqA (n - 3)
