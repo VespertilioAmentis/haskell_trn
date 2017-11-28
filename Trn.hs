@@ -16,7 +16,7 @@ seqA n  | n < 0 = error "n must be positive"
         | n < 3 = n + 1
         | otherwise =
             let
-                helper k3 _ _ 0 = k3
+                helper k3 _ _ 2 = k3
                 helper k3 k2 k1 n = helper
                                         (k3 + k2 - 2 * k1)
                                         k3
