@@ -24,3 +24,11 @@ seqA n  | n < 0 = error "n must be positive"
                                         k2
                                         (n - 1)
             in helper 3 2 1 n
+
+sum'n'count :: Integer -> (Integer, Integer)
+sum'n'count 0 = (0, 1)
+sum'n'count x | x < 0 = sum'n'count (-x)
+              | otherwise = helper x 0 0
+    where
+        helper 0 sum cnt = (sum, cnt)
+        helper x sum cnt = helper (div x 10) (sum + mod x 10) (cnt + 1)
