@@ -33,21 +33,6 @@ sum'n'count x | x < 0 = sum'n'count (-x)
         helper 0 sum cnt = (sum, cnt)
         helper x sum cnt = helper (div x 10) (sum + mod x 10) (cnt + 1)
 
-h :: Double
-h =
-    let
-        a = 0
-        b = pi
-        n = 1000 :: Double
-    in (b - a) / n
-  
-{-      
-getrest_acc :: (Double -> Double) -> Double -> Double -> Double -> Double -> Double
-getrest_acc f x1 xn step acc
-    | x1 >= xn = acc
-    | otherwise = getrest_acc f (x1 + step) xn step (acc + f x1)
--}
-
 integration :: (Double -> Double) -> Double -> Double -> Double
 integration f a b = h * (get1st f a b + getrest f (a + h))
     where
