@@ -32,3 +32,18 @@ sum'n'count x | x < 0 = sum'n'count (-x)
     where
         helper 0 sum cnt = (sum, cnt)
         helper x sum cnt = helper (div x 10) (sum + mod x 10) (cnt + 1)
+
+integration :: (Double -> Double) -> Double -> Double -> Double
+integration f a b = h * (get1st f 0.0 n + getrest f 1.0 (n - 1.0))
+    where
+        h = (b - a) / n
+        n = 1000.0
+        get1st :: (Double -> Double) -> Double -> Double -> Double
+        get1st f x0 xn = (f x0 + f xn) / 2.0
+        getrest :: (Double -> Double) -> Double -> Double -> Double
+        getrest f x1 xn = getrest_acc f x1 xn 0.0
+            where
+                getrest_acc :: (Double -> Double) -> Double -> Double -> Double -> Double
+                getrest_acc f x1 xn acc
+                    | x1 == xn = acc
+                    | otherwise = getrest_acc f (x1 + 1.0) xn (acc + f x1)
