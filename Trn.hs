@@ -56,7 +56,7 @@ integration f a b = h * (get1st f a b + getrest f (a + h))
         get1st :: (Double -> Double) -> Double -> Double -> Double
         get1st f x0 xn = (f x0 + f xn) / 2.0
         getrest :: (Double -> Double) -> Double -> Double
-        getrest f x = getrest_acc f x h 0 (n - 2) 0.0
+        getrest f x = getrest_acc f x h 0 (n - 1) 0.0
             where
                 getrest_acc :: (Double -> Double) 
                                -> Double -> Double 
