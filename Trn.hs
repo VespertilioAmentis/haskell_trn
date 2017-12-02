@@ -1,5 +1,7 @@
 module Trn where
 
+import Data.Function
+
 fibonacci 0 = 0
 fibonacci n = fibacc 1 0 n
 fibacc acc prev 0 = acc
@@ -52,3 +54,10 @@ integration f a b = h * (get1st f a b + getrest f (a + h))
                     | otherwise = getrest_acc f (x + incr) incr 
                                                 (step + 1) steps 
                                                 (acc + f x)
+
+multSecond = g `on` h
+g = (*)
+h x = snd x
+
+on3 :: (b -> b -> b -> c) -> (a -> b) -> a -> a -> a -> c
+on3 op f x y z = op (f x) (f y) (f z)
