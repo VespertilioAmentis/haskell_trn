@@ -110,3 +110,12 @@ instance SafeEnum Int where
 avg :: Int -> Int -> Int -> Double
 avg x y z =  sum lst / fromIntegral (length lst)
     where lst = [fromIntegral x, fromIntegral y, fromIntegral z]
+
+addTwoElements a b c = a : b : c
+
+nTimes:: a -> Int -> [a]
+nTimes val cnt = nTimes_acc val cnt []
+    where
+        nTimes_acc :: a -> Int -> [a] -> [a]
+        nTimes_acc _ 0 a = a
+        nTimes_acc v c a = nTimes_acc v (c - 1) (v : a)
