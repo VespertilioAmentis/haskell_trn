@@ -1,6 +1,7 @@
 module Trn where
 
 import Data.Function
+import Data.Char
 
 fibonacci 0 = 0
 fibonacci n = fibacc 1 0 n
@@ -162,4 +163,20 @@ sum3 x y z = sumheads x y z : sum3 (smarttail x) (smarttail y) (smarttail z)
         smarttail [] = []
         smarttail (_:xs) = xs
 
+groupElems [] = []
+groupElems (x:xs) = fst (spanned (x:xs)) : groupElems (snd $ spanned (x:xs))
+    where
+        spanned (x:xs) = span (==x)(x:xs)
 
+readDigits = span isDigit
+
+filterDisj :: (a -> Bool) -> (a -> Bool) -> [a] -> [a]
+filterDisj _ _ [] = []
+filterDisj pr1 pr2 (x:xs) | pr1 x || pr2 x = x : filterDisj pr1 pr2 xs
+                          |otherwise = filterDisj pr1 pr2 xs
+
+qsort [] = []
+qsort (x:xs) = qsort (filter (< x) xs) ++ [x] ++ qsort (filter (>= x) xs) 
+
+squares'n'cubes :: Num a => [a] -> [a]
+squares'n'cubes = concatMap (\x -> [x ^ 2, x ^ 3])
