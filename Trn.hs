@@ -190,7 +190,6 @@ perms xx =
 
         getShifts :: Integral b => [[a]] -> b -> [a] -> [[a]]
         getShifts acc 0 _ = acc
-        getShifts acc n xx@(x:xs) =
-            getShifts (xx : acc) (n - 1) (xs ++ [x])
+        getShifts acc n xx@(x:xs) = getShifts (xx : acc) (n - 1) (xs ++ [x])
     in
         concatMap (\x -> [x, reverse x]) (getShifts [] (getShiftsCnt xx) xx)
