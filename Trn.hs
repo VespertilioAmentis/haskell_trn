@@ -119,3 +119,11 @@ nTimes val cnt = nTimes_acc val cnt []
         nTimes_acc :: a -> Int -> [a] -> [a]
         nTimes_acc _ 0 a = a
         nTimes_acc v c a = nTimes_acc v (c - 1) (v : a)
+
+oddsOnly xs = oddsOnly_acc xs []
+    where
+        oddsOnly_acc [] acc = reverse acc
+        oddsOnly_acc (x:xs) acc | odd x = oddsOnly_acc xs (x : acc)
+                                | otherwise = oddsOnly_acc xs acc
+
+
