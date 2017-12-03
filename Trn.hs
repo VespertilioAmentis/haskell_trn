@@ -127,3 +127,7 @@ oddsOnly xs = oddsOnly_acc xs []
                                 | otherwise = oddsOnly_acc xs acc
 
 
+oddsOnly' [] = []
+oddsOnly' (x:xs) | odd x = x : oddsOnly' xs
+                 | otherwise = oddsOnly' xs
+
