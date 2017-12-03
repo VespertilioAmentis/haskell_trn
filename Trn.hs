@@ -152,4 +152,14 @@ minimum' (x:xs) = min x (minimum' xs)
 isPalindrome :: Eq a => [a] -> Bool
 isPalindrome l = l == reverse l
 
+sum3 [] [] [] = []
+sum3 x y z = sumheads x y z : sum3 (smarttail x) (smarttail y) (smarttail z)
+    where
+        sumheads x y z = smarthead x + smarthead y + smarthead z
+            where
+                smarthead [] = 0
+                smarthead (x:_) = x
+        smarttail [] = []
+        smarttail (_:xs) = xs
+
 
