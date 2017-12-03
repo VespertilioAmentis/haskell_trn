@@ -188,11 +188,9 @@ perms xx =
     let
         getShiftsCnt x = div (product [1..(length x)]) 2
 
-        getPermPairsViaShift :: Integral b => [[a]] -> b -> [a] -> [[a]]
-        getPermPairsViaShift acc 0 _ = acc
-        getPermPairsViaShift acc n xx@(x:xs) =
-            getPermPairsViaShift (xx : reverse xx : acc)
-                                 (n - 1)
-                                 (xs ++ [x])
+        getShifts :: Integral b => [[a]] -> b -> [a] -> [[a]]
+        getShifts acc 0 _ = acc
+        getShifts acc n xx@(x:xs) =
+            getShifts (xx : acc) (n - 1) (xs ++ [x])
     in
-        getPermPairsViaShift [] (getShiftsCnt xx) xx
+        concatMap (\x -> [x, reverse x]) (getShifts [] (getShiftsCnt xx) xx)
