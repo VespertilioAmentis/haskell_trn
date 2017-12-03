@@ -55,9 +55,27 @@ integration f a b = h * (get1st f a b + getrest f (a + h))
                                                 (step + 1) steps 
                                                 (acc + f x)
 
-multSecond = g `on` h
-g = (*)
-h x = snd x
+multSecond = g' `on` h'
+g' = (*)
+h' x = snd x
 
 on3 :: (b -> b -> b -> c) -> (a -> b) -> a -> a -> a -> c
 on3 op f x y z = op (f x) (f y) (f z)
+
+doItYourself = f . g . h
+f = logBase 2
+g = (^3)
+h = max 42
+
+class Printable a where
+    toString :: a -> String
+
+instance Printable Bool where
+    toString True = "true"
+    toString False = "false"
+
+instance Printable () where
+    toString _ = "unit type"
+
+instance (Printable a, Printable b) => Printable (a,b) where
+    toString (x, y) = "(" ++ toString x ++ "," ++ toString y ++ ")"
