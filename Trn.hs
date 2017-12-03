@@ -148,3 +148,8 @@ maximum' (x:xs) = max x (maximum' xs)
 minimum' [] = errEmpty
 minimum' [x] = x
 minimum' (x:xs) = min x (minimum' xs)
+
+isPalindrome :: Eq a => [a] -> Bool
+isPalindrome l = l == reverse l
+
+
