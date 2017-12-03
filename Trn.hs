@@ -107,4 +107,6 @@ class (Enum a, Bounded a, Eq a) => SafeEnum a where
 instance SafeEnum Bool where
 instance SafeEnum Int where
 
-
+avg :: Int -> Int -> Int -> Double
+avg x y z =  sum lst / fromIntegral (length lst)
+    where lst = [fromIntegral x, fromIntegral y, fromIntegral z]
