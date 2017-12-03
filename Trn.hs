@@ -186,7 +186,7 @@ perms [] = [[]]
 perms [x] = [[x]]
 perms xx =
     let
-        getShiftsCnt x = max ( div (product [1..(length x)]) 2 ) 1
+        getShiftsCnt x = div (product [1..(length x)]) 2
 
         getPermPairsViaShift :: Integral b => [[a]] -> b -> [a] -> [[a]]
         getPermPairsViaShift acc 0 _ = acc
