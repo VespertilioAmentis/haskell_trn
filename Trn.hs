@@ -131,3 +131,20 @@ oddsOnly' [] = []
 oddsOnly' (x:xs) | odd x = x : oddsOnly' xs
                  | otherwise = oddsOnly' xs
 
+product' [] = 1
+product' (0:_) = 0
+product' (x:xs) = x * product xs
+
+sum' [] = 0
+sum' (x:xs) = x + sum' xs
+
+
+errEmpty = error "Empty list"
+
+maximum' [] = errEmpty
+maximum' [x] = x
+maximum' (x:xs) = max x (maximum' xs)
+
+minimum' [] = errEmpty
+minimum' [x] = x
+minimum' (x:xs) = min x (minimum' xs)
