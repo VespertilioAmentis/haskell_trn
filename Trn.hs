@@ -180,3 +180,28 @@ qsort (x:xs) = qsort (filter (< x) xs) ++ [x] ++ qsort (filter (>= x) xs)
 
 squares'n'cubes :: Num a => [a] -> [a]
 squares'n'cubes = concatMap (\x -> [x ^ 2, x ^ 3])
+
+getPermsCnt x = product [1..(length x)]
+
+getPermPairsViaShift :: Integral b => [[a]] -> b -> [a] -> [[a]]
+getPermPairsViaShift acc 0 _ = acc
+getPermPairsViaShift acc n xx@(x:xs) =
+    getPermPairsViaShift (xx : reverse xx : acc)
+                         (n - 1)
+                         (xs ++ [x])
+
+perms :: [a] -> [[a]]
+perms [] = [[]]
+perms [x] = [[x]]
+perms xx =
+    let
+        getShiftsCnt x = div (product [1..(length x)]) 2
+
+        getPermPairsViaShift :: Integral b => [[a]] -> b -> [a] -> [[a]]
+        getPermPairsViaShift acc 0 _ = acc
+        getPermPairsViaShift acc n xx@(x:xs) =
+            getPermPairsViaShift (xx : reverse xx : acc)
+                                 (n - 1)
+                                 (xs ++ [x])
+    in
+        getPermPairsViaShift [] (getShiftsCnt xx) xx
