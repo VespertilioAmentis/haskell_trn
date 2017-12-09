@@ -173,7 +173,7 @@ readDigits = span isDigit
 filterDisj :: (a -> Bool) -> (a -> Bool) -> [a] -> [a]
 filterDisj _ _ [] = []
 filterDisj pr1 pr2 (x:xs) | pr1 x || pr2 x = x : filterDisj pr1 pr2 xs
-                          |otherwise = filterDisj pr1 pr2 xs
+                          | otherwise = filterDisj pr1 pr2 xs
 
 qsort [] = []
 qsort (x:xs) = qsort (filter (< x) xs) ++ [x] ++ qsort (filter (>= x) xs) 
@@ -200,3 +200,21 @@ fibStream = deepFib [0,1,1]
             where
                 frst x = head x
                 secnd x = head $ tail x
+
+data Odd = Odd Integer 
+    deriving (Eq, Show) 
+
+instance Enum Odd where
+    toEnum = Odd . toInteger
+    fromEnum (Odd x) = fromInteger x :: Int
+    succ =  Odd . toInteger . (+2) . fromEnum
+    pred x =  Odd $ toInteger $ fromEnum x - 2
+    enumFrom x = x : enumFrom (succ x)
+    enumFromTo x y | fromEnum x < fromEnum y = x : enumFromTo (succ x) y
+                   | fromEnum x > fromEnum y = x : enumFromTo (pred x) y
+                   | otherwise = [x]
+    enumFromThen x y = x : enumFromThen (nextVal x) (nextVal y)
+        where
+            nextVal z = Odd $ toInteger $ fromEnum z + step
+                where
+                    step = fromEnum y - fromEnum x
