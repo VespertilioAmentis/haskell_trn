@@ -187,9 +187,16 @@ perms [x] = [[x]]
 perms xx =
     let
         getShiftsCnt x = div (product [1..(length x)]) 2
-
         getShifts :: Integral b => [[a]] -> b -> [a] -> [[a]]
         getShifts acc 0 _ = acc
         getShifts acc n xx@(x:xs) = getShifts (xx : acc) (n - 1) (xs ++ [x])
     in
         concatMap (\x -> [x, reverse x]) (getShifts [] (getShiftsCnt xx) xx)
+
+fibStream :: [Integer]
+fibStream = deepFib [0,1,1]
+    where
+        deepFib (x:xs) = x : deepFib (xs ++ [frst xs + secnd xs])
+            where
+                frst x = head x
+                secnd x = head $ tail x
