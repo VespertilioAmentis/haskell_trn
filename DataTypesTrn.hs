@@ -104,7 +104,7 @@ decToBin :: Int -> Z
 decToBin x = Z (toEnum $ signum x) $ fromDecimal (abs x)
 
 add :: Z -> Z -> Z
-add = undefined
+add x y = decToBin $ binToDec x + binToDec y
 
 mul :: Z -> Z -> Z
-mul = undefined
+mul x y = decToBin $ binToDec x * binToDec y
