@@ -217,3 +217,9 @@ instance Enum Odd where
                                | otherwise = reverse [Odd y .. Odd x]
         where
             filterEvens = filter (\x -> mod x 2 == 1)
+
+lengthList :: [a] -> Int
+lengthList = foldr (\a z -> z + 1) 0
+
+
+thefun = foldr (:) []
