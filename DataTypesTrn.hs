@@ -100,6 +100,9 @@ fromDecimal = reverse . dropWhile (==Zero) . toBin
                 | n `mod` 2 == 0 = toBin (n `div` 2) ++ [Zero]
 
 
+decToBin :: Int -> Z
+decToBin x = Z (toEnum $ signum x) $ fromDecimal (abs x)
+
 add :: Z -> Z -> Z
 add = undefined
 
