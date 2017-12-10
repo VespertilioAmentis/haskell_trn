@@ -35,7 +35,7 @@ area (Rectangle a b) | a < 0 || b < 0 = error "Negative sides"
                      | otherwise = a * b
 
 
-data Bit = Zero | One deriving Eq
+data Bit = Zero | One deriving (Eq, Enum)
 data Sign = Minus | Plus deriving Eq
 data Z = Z Sign [Bit]
 
@@ -57,6 +57,8 @@ instance Show Z where
 
 instance Eq Z where
     (==) (Z a b) (Z c d) = (b == d) && (a == c)
+
+--toDecimal :: [Bit] -> Int
 
 add :: Z -> Z -> Z
 add = undefined
