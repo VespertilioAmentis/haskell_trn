@@ -1,4 +1,4 @@
-module LstTrn where
+module LstTrn (testAll) where
 
 import Data.List
 
