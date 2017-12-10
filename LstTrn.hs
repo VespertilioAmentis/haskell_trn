@@ -35,14 +35,15 @@ revRange :: (Char,Char) -> [Char]
 revRange (x,y) = unfoldr g y
     where
         g :: Char -> Maybe (Char, Char)
-        g y | y /= pred x = Just (y, pred y)
+        g y | y > pred x = Just (y, pred y)
             | otherwise = Nothing
 
 revTest1 = revRange ('a', 'z') == "zyxwvutsrqponmlkjihgfedcba"
 revTest2 = revRange ('a', 'b') == "ba"
 revTest3 = revRange ('a', 'a') == "a"
 revTest4 = revRange ('j', 't') == "tsrqponmlkj"
+revTest5 = revRange ('A', 'Z') == "ZYXWVUTSRQPONMLKJIHGFEDCBA"
 
-allRevTests = testAll [revTest1, revTest2, revTest3, revTest4]
+allRevTests = testAll [revTest1, revTest2, revTest3, revTest4, revTest5]
 
 
