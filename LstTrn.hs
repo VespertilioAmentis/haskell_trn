@@ -32,10 +32,11 @@ lastTest5 = lastElem [10, 9, (-3)] == (-3)
 allLastTests = testAll [lastTest1, lastTest2, lastTest3, lastTest4, lastTest5]
 
 revRange :: (Char,Char) -> [Char]
-revRange x = unfoldr g (fst x)
+revRange (x,y) = unfoldr g y
     where
         g :: Char -> Maybe (Char, Char)
-        g _ = Just ('a', 'b')
+        g y | y /= pred x = Just (y, pred y)
+            | otherwise = Nothing
 
 revTest1 = revRange ('a', 'z') == "zyxwvutsrqponmlkjihgfedcba"
 revTest2 = revRange ('a', 'b') == "ba"
