@@ -1,6 +1,7 @@
 module DataTypesTrn where
 
 import LstTrn
+import Data.List
 
 data Color = Red | Green | Blue
 
@@ -89,7 +90,17 @@ btdTests = [binToDec (Z Minus [One]) == (-1),
             binToDec (Z Minus [Zero, Zero, Zero, Zero, Zero, Zero, One]) == (-64)]
 
 allBtdTests = testAll btdTests
-            
+
+fromDecimal :: Int -> [Bit]
+fromDecimal = reverse . (unfoldr decompositeInt)
+    where
+        decompositeInt :: Int -> Maybe (Bit, Int)
+        decompositeInt n | n >=0 = Just (One,
+                                         n - closestPow n)
+                         | otherwise = Nothing
+            where
+                closestPow x = ceiling (log (fromIntegral x) / log 2)
+
 
 add :: Z -> Z -> Z
 add = undefined
