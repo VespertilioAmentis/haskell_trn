@@ -92,14 +92,12 @@ btdTests = [binToDec (Z Minus [One]) == (-1),
 allBtdTests = testAll btdTests
 
 fromDecimal :: Int -> [Bit]
-fromDecimal = reverse . (unfoldr decompositeInt)
+fromDecimal = reverse . dropWhile (==Zero) . toBin
     where
-        decompositeInt :: Int -> Maybe (Bit, Int)
-        decompositeInt n | n >=0 = Just (One,
-                                         n - closestPow n)
-                         | otherwise = Nothing
-            where
-                closestPow x = ceiling (log (fromIntegral x) / log 2)
+        toBin :: Int -> [Bit]
+        toBin 0 = [Zero]
+        toBin n | n `mod` 2 == 1 = toBin (n `div` 2) ++ [One]
+                | n `mod` 2 == 0 = toBin (n `div` 2) ++ [Zero]
 
 
 add :: Z -> Z -> Z
