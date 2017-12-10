@@ -48,10 +48,12 @@ instance Show Bit where
     show One = "1"
 
 instance Show Z where
-    show (Z a b) = show a ++ (show $ lstToDirectOrder b)
+    show (Z a b) = show a ++ (toChars $ lstToDirectOrder b)
         where
             lstToDirectOrder :: [Bit] -> [Bit]
             lstToDirectOrder = dropWhile (== Zero) . reverse
+            toChars :: [Bit] -> String
+            toChars = concatMap show
 
 instance Eq Z where
     (==) (Z a b) (Z c d) = (b == d) && (a == c)
