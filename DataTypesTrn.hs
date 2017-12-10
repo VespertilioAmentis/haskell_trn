@@ -83,6 +83,12 @@ decTests = [toDecimal [Zero] == 0,
             toDecimal [One, Zero, Zero, One, One] == 25]
 
 allDecTests = testAll decTests
+
+btdTests = [binToDec (Z Minus [One]) == (-1),
+            binToDec (Z Plus [One, Zero, Zero, One, One]) == 25,
+            binToDec (Z Minus [Zero, Zero, Zero, Zero, Zero, Zero, One]) == (-64)]
+
+allBtdTests = testAll btdTests
             
 
 add :: Z -> Z -> Z
