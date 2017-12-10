@@ -21,7 +21,7 @@ evTest3 = evenOnly [2, 4, 6, 8, 10] == [4, 8]
 allEvenTests = testAll [evTest1, evTest2, evTest3]
 
 lastElem :: [a] -> a
-lastElem = head
+lastElem = foldl1 (flip const)
 
 lastTest1 = lastElem [1] == 1
 lastTest2 = lastElem [1,2,3] == 3
