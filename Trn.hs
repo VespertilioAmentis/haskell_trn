@@ -205,16 +205,15 @@ data Odd = Odd Integer
     deriving (Eq, Show) 
 
 instance Enum Odd where
-    toEnum = Odd . toInteger
+    toEnum x | mod x 2 == 1 = Odd $ toInteger x
+             | otherwise = error "Even value"    
     fromEnum (Odd x) = fromInteger x :: Int
-    succ =  Odd . toInteger . (+2) . fromEnum
-    pred x =  Odd $ toInteger $ fromEnum x - 2
-    enumFrom x = x : enumFrom (succ x)
-    enumFromTo x y | fromEnum x < fromEnum y = x : enumFromTo (succ x) y
-                   | fromEnum x > fromEnum y = x : enumFromTo (pred x) y
-                   | otherwise = [x]
-    enumFromThen x y = x : enumFromThen (nextVal x) (nextVal y)
+    succ (Odd x) =  Odd (x + 2)
+    pred (Odd x) =  Odd (x - 2)
+    enumFrom x = x : [succ x ..]
+    enumFromThenTo (Odd x) (Odd y) (Odd z) = map Odd [x, y .. z]
+    enumFromThen (Odd x) (Odd y) = map Odd [x, y ..]
+    enumFromTo (Odd x) (Odd y) | x <= y = map Odd (filterEvens [x..y])
+                               | otherwise = reverse [Odd y .. Odd x]
         where
-            nextVal z = Odd $ toInteger $ fromEnum z + step
-                where
-                    step = fromEnum y - fromEnum x
+            filterEvens = filter (\x -> mod x 2 == 1)
