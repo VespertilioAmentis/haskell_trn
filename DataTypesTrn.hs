@@ -3,6 +3,7 @@ module DataTypesTrn where
 import LstTrn
 import Data.List
 import Data.Char(isDigit)
+import Data.Maybe (fromMaybe)
 
 data Color = Red | Green | Blue
 
@@ -200,10 +201,7 @@ parsePerson x | not $ checkFmt x = Left ParsingError
         orderVals x = [findByStr fname x, findByStr lname x, findByStr ageName x]
             where
                 findByStr :: String -> [(String, String)] -> String
-                findByStr str = snd . head . dropWhile (notStr str)
-                    where
-                        notStr :: String -> (String, String) -> Bool
-                        notStr str = (/= str) . fst
+                findByStr str = snd . fromMaybe (("Can't find " ++ str, "")) . find ((==str) . fst)
               
 
 -- wrong Parse | empty string
