@@ -110,9 +110,23 @@ mul :: Z -> Z -> Z
 mul x y = decToBin $ binToDec x * binToDec y
 
 data Coord a = Coord a a
+    deriving Show
 
 distance :: Coord Double -> Coord Double -> Double
 distance (Coord x1 y1) (Coord x2 y2) = sqrt ( (x2 - x1) ^ 2 + (y2 - y1) ^ 2 )
 
 manhDistance :: Coord Int -> Coord Int -> Int
 manhDistance (Coord x1 y1) (Coord x2 y2) = abs (x2 - x1) + abs (y2 - y1)
+
+getCenter :: Double -> Coord Int -> Coord Double
+getCenter width (Coord x y) =
+    Coord (projection width x) (projection width y)
+        where
+            projection :: Double -> Int -> Double
+            projection width x = halfWidth width + fromIntegral x
+                where
+                    halfWidth :: Double -> Double
+                    halfWidth = (/2)
+            
+getCell :: Double -> Coord Double -> Coord Int
+getCell = undefined
