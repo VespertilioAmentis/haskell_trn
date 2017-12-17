@@ -178,12 +178,12 @@ filterPerson =  toTupleList . filter (isFLA) . filter hasSpacedEqSign . lines
         isFLA str = or $ map (`isInfixOf` str) [fname, lname, ageName]
 
 checkFmt :: String -> Bool
-checkFmt "" = False
 checkFmt x = 
-    let
-        eqList = filter hasSpacedEqSign $ lines x
-    in
-        length eqList == (length $ lines x)
+    (length eqList == (length $ splitted)) && (all (==3) $ map length $ map words $ splitted)
+        where
+            splitted = lines x
+            eqList = filter hasSpacedEqSign $ splitted
+        
         
 
 parsePerson :: String -> Either Error Person
