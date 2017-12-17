@@ -155,10 +155,10 @@ listToMaybe [] = Nothing
 listToMaybe x = Just $ head x
 
 data Error = ParsingError | IncompleteDataError | IncorrectDataError String
-    deriving Show
+    deriving (Show, Eq)
 
 data Person = Person { firstName :: String, lastName :: String, age :: Int }
-    deriving Show
+    deriving (Show, Eq)
 
 ageName = "age"
 fname = "firstName"
