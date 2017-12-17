@@ -154,17 +154,25 @@ listToMaybe [] = Nothing
 listToMaybe x = Just $ head x
 
 data Error = ParsingError | IncompleteDataError | IncorrectDataError String
+    deriving Show
 
 data Person = Person { firstName :: String, lastName :: String, age :: Int }
     deriving Show
 
 isFLA str = or $ map (`isInfixOf` str) ["age", "firstName", "lastName"]
 
-hasSpacedEqSign :: String -> Bool
-hasSpacedEqSign =  isInfixOf " = "
+spacedEq = " = "
 
-filterPerson :: String -> [String]
-filterPerson = filter (isFLA) . filter (isInfixOf " = ") . lines
+hasSpacedEqSign :: String -> Bool
+hasSpacedEqSign =  isInfixOf spacedEq
+
+toTupleList :: [String] -> [(String, String)]
+toTupleList = map trimSnd . map (span (/= ' '))
+    where
+        trimSnd x = (fst x, drop (length spacedEq) $ snd x)
+
+filterPerson :: String -> [(String, String)]
+filterPerson = toTupleList . filter (isFLA) . filter hasSpacedEqSign . lines
 
 checkFmt :: String -> Bool
 checkFmt x = 
