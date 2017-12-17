@@ -2,6 +2,7 @@ module DataTypesTrn where
 
 import LstTrn
 import Data.List
+import Data.Char(isDigit)
 
 data Color = Red | Green | Blue
 
@@ -120,13 +121,17 @@ manhDistance (Coord x1 y1) (Coord x2 y2) = abs (x2 - x1) + abs (y2 - y1)
 
 getCenter :: Double -> Coord Int -> Coord Double
 getCenter width (Coord x y) =
-    Coord (projection width x) (projection width y)
+    Coord (widthproj x) (widthproj y)
         where
+            widthproj = projection width
             projection :: Double -> Int -> Double
-            projection width x = halfWidth width + fromIntegral x
-                where
-                    halfWidth :: Double -> Double
-                    halfWidth = (/2)
+            projection width x = width / 2 + fromIntegral x * width
             
 getCell :: Double -> Coord Double -> Coord Int
-getCell = undefined
+getCell width (Coord x y) = 
+    Coord (getNum x) (getNum y)
+        where
+            getNum = floor . (/width)
+
+findDigit :: [Char] -> Maybe Char
+findDigit = Just . head . (dropWhile (not . isDigit))
