@@ -159,7 +159,11 @@ data Error = ParsingError | IncompleteDataError | IncorrectDataError String
 data Person = Person { firstName :: String, lastName :: String, age :: Int }
     deriving Show
 
-isFLA str = or $ map (`isInfixOf` str) ["age", "firstName", "lastName"]
+ageName = "age"
+fname = "firstName"
+lname = "lastName"
+
+isFLA str = or $ map (`isInfixOf` str) [fname, lname, ageName]
 
 spacedEq = " = "
 
@@ -187,17 +191,19 @@ parsePerson x | not $ checkFmt x = Left ParsingError
               | (length $ filterPerson x) < 3 = Left IncompleteDataError
               | otherwise = makePerson $ orderVals $ filterPerson x
     where
-        makePerson :: [(String, String)] -> Either Error Person
-        makePerson x | not $ all isDigit $ ageField x = Left $ IncorrectDataError $ ageField x
-                     | otherwise = Right $ Person {firstName = fnameField x,
-                                                   lastName = lnameField x,
-                                                   age = read (ageField x) :: Int}
+        makePerson :: [String] -> Either Error Person
+        makePerson x | not $ all isDigit $ x !! 2 = Left $ IncorrectDataError $ x !! 2
+                     | otherwise = Right $ Person {firstName = x !! 0,
+                                                   lastName = x !! 1,
+                                                   age = read (x !! 2) :: Int}
+        orderVals :: [(String, String)] -> [String]
+        orderVals x = [findByStr fname x, findByStr lname x, findByStr ageName x]
             where
-                fnameField = snd . (!! 0)
-                lnameField = snd . (!! 1)
-                ageField  = snd . (!! 2)
-        orderVals :: [(String, String)] -> [(String, String)]
-        orderVals = undefined
+                findByStr :: String -> [(String, String)] -> String
+                findByStr str = snd . head . dropWhile (notStr str)
+                    where
+                        notStr :: String -> (String, String) -> Bool
+                        notStr str = (/= str) . fst
               
 
 -- wrong Parse | empty string
