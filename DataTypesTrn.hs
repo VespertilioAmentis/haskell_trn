@@ -160,11 +160,25 @@ data Person = Person { firstName :: String, lastName :: String, age :: Int }
 
 isFLA str = or $ map (`isInfixOf` str) ["age", "firstName", "lastName"]
 
+hasSpacedEqSign :: String -> Bool
+hasSpacedEqSign =  isInfixOf " = "
+
 filterPerson :: String -> [String]
-filterPerson = filter (isFLA) . filter (any (=='=')) . lines
+filterPerson = filter (isFLA) . filter (isInfixOf " = ") . lines
+
+checkFmt :: String -> Bool
+checkFmt x = 
+    let
+        eqList = filter (isInfixOf " = ") $ lines x
+    in
+        length eqList == (length $ lines x)
+        
 
 parsePerson :: String -> Either Error Person
-parsePerson = undefined
+parsePerson x | not $ checkFmt x = Left ParsingError
+              | (length $ filterPerson x) < 3 = Left IncompleteDataError
+              | otherwise = undefined
+              
 
 -- wrong Parse | empty string
 t0 = parsePerson ""
