@@ -163,25 +163,25 @@ ageName = "age"
 fname = "firstName"
 lname = "lastName"
 
-isFLA str = or $ map (`isInfixOf` str) [fname, lname, ageName]
-
 spacedEq = " = "
 
 hasSpacedEqSign :: String -> Bool
 hasSpacedEqSign =  isInfixOf spacedEq
 
-toTupleList :: [String] -> [(String, String)]
-toTupleList = map trimSnd . map (span (/= ' '))
-    where
-        trimSnd x = (fst x, drop (length spacedEq) $ snd x)
-
 filterPerson :: String -> [(String, String)]
 filterPerson =  toTupleList . filter (isFLA) . filter hasSpacedEqSign . lines
+    where
+        toTupleList :: [String] -> [(String, String)]
+        toTupleList = map trimSnd . map (span (/= ' '))
+            where
+                trimSnd x = (fst x, drop (length spacedEq) $ snd x)
+        isFLA str = or $ map (`isInfixOf` str) [fname, lname, ageName]
 
 checkFmt :: String -> Bool
+checkFmt "" = False
 checkFmt x = 
     let
-        eqList = filter (isInfixOf " = ") $ lines x
+        eqList = filter hasSpacedEqSign $ lines x
     in
         length eqList == (length $ lines x)
         
