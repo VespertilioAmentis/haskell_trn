@@ -188,7 +188,14 @@ parsePerson x | not $ checkFmt x = Left ParsingError
               | otherwise = makePerson $ orderVals $ filterPerson x
     where
         makePerson :: [(String, String)] -> Either Error Person
-        makePerson = undefined
+        makePerson x | not $ all isDigit $ ageField x = Left $ IncorrectDataError $ ageField x
+                     | otherwise = Right $ Person {firstName = fnameField x,
+                                                   lastName = lnameField x,
+                                                   age = read (ageField x) :: Int}
+            where
+                fnameField = snd . (!! 0)
+                lnameField = snd . (!! 1)
+                ageField  = snd . (!! 2)
         orderVals :: [(String, String)] -> [(String, String)]
         orderVals = undefined
               
