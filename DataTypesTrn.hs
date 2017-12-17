@@ -172,7 +172,7 @@ toTupleList = map trimSnd . map (span (/= ' '))
         trimSnd x = (fst x, drop (length spacedEq) $ snd x)
 
 filterPerson :: String -> [(String, String)]
-filterPerson = toTupleList . filter (isFLA) . filter hasSpacedEqSign . lines
+filterPerson =  toTupleList . filter (isFLA) . filter hasSpacedEqSign . lines
 
 checkFmt :: String -> Bool
 checkFmt x = 
@@ -185,7 +185,12 @@ checkFmt x =
 parsePerson :: String -> Either Error Person
 parsePerson x | not $ checkFmt x = Left ParsingError
               | (length $ filterPerson x) < 3 = Left IncompleteDataError
-              | otherwise = undefined
+              | otherwise = makePerson $ orderVals $ filterPerson x
+    where
+        makePerson :: [(String, String)] -> Either Error Person
+        makePerson = undefined
+        orderVals :: [(String, String)] -> [(String, String)]
+        orderVals = undefined
               
 
 -- wrong Parse | empty string
