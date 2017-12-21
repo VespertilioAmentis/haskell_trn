@@ -155,6 +155,8 @@ listToMaybe :: [a] -> Maybe a
 listToMaybe [] = Nothing
 listToMaybe x = Just $ head x
 
+-----------------------------------------------------------
+
 data Error = ParsingError | IncompleteDataError | IncorrectDataError String
     deriving (Show, Eq)
 
@@ -276,3 +278,43 @@ runPersonFastTests (x:xs) i = testToShortTuple x i : runPersonFastTests xs (i + 
 
 runFastTests :: [(Int, Bool)]
 runFastTests = runPersonFastTests listSamplesAndVals 0
+
+-----------------------------------------------------------
+
+data List a = Nil | Cons a (List a) deriving Show
+
+fromList :: List a -> [a]
+fromList Nil = []
+fromList (Cons x y) = x : fromList y
+
+toList :: [a] -> List a
+toList [] = Nil
+toList (x:xs) = Cons x $ toList xs
+
+-----------------------------------------------------------
+
+data Nat = Zero' | Suc Nat
+
+instance Show Nat where
+    show Zero' = ""
+    show (Suc x) = '1' : show x
+
+fromNat :: Nat -> Integer
+fromNat Zero' = 0
+fromNat (Suc n) = fromNat n + 1
+
+toNat :: Integer -> Nat
+toNat 0 = Zero'
+toNat x = Suc $ toNat $ x - 1
+
+biNatOp :: (Integer -> Integer -> Integer) -> Nat -> Nat -> Nat
+biNatOp z x y = toNat $ z (fromNat x) $ (fromNat y)
+
+add' :: Nat -> Nat -> Nat
+add' = biNatOp (+)
+
+mul' :: Nat -> Nat -> Nat
+mul' = biNatOp (*)
+
+fac' :: Nat -> Nat
+fac' = toNat . product . enumFromTo 1 . fromNat
