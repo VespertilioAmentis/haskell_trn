@@ -318,3 +318,6 @@ mul' = biNatOp (*)
 
 fac' :: Nat -> Nat
 fac' = toNat . product . enumFromTo 1 . fromNat
+
+-----------------------------------------------------------
+
