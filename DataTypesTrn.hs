@@ -161,54 +161,8 @@ data Error = ParsingError | IncompleteDataError | IncorrectDataError String
 data Person = Person { firstName :: String, lastName :: String, age :: Int }
     deriving (Show, Eq)
 
-ageName = "age"
-fname = "firstName"
-lname = "lastName"
-
-spacedEq = " = "
-
-hasSpacedEqSign :: String -> Bool
-hasSpacedEqSign =  isInfixOf spacedEq
-
-filterPerson :: String -> [(String, String)]
-filterPerson =  toTupleList . filter (isFLA) . filter hasSpacedEqSign . lines . stripText
-    where
-        toTupleList :: [String] -> [(String, String)]
-        toTupleList = map trimSnd . map (span (/= ' '))
-            where
-                trimSnd x = (fst x, drop (length spacedEq) $ snd x)
-        isFLA str = or $ map (`isInfixOf` str) [fname, lname, ageName]
-
-stripText :: String -> String
-stripText = T.unpack . T.strip . T.pack
-
-checkFmt :: String -> Bool
-checkFmt x = 
-    (length eqList == (length $ splitted)) && (and $ map symsFromBoth eqList) && ( (length eqList) > 0)
-        where
-            splitted = lines $ stripText x
-            eqList = filter hasSpacedEqSign $ splitted
-            symsFromBoth :: String -> Bool
-            symsFromBoth x = (length (fst spanned) > 0) && (length (snd spanned) > length spacedEq)
-                where
-                        spanned = span (/= ' ') x
-        
-
 parsePerson :: String -> Either Error Person
-parsePerson x | not $ checkFmt x = Left ParsingError
-              | (length $ filterPerson x) < 3 = Left IncompleteDataError
-              | otherwise = makePerson $ orderVals $ filterPerson x
-    where
-        makePerson :: [String] -> Either Error Person
-        makePerson x | not $ all isDigit $ x !! 2 = Left $ IncorrectDataError $ x !! 2
-                     | otherwise = Right $ Person {firstName = x !! 0,
-                                                   lastName = x !! 1,
-                                                   age = read (x !! 2) :: Int}
-        orderVals :: [(String, String)] -> [String]
-        orderVals x = [findByStr fname x, findByStr lname x, findByStr ageName x]
-            where
-                findByStr :: String -> [(String, String)] -> String
-                findByStr str = snd . fromMaybe (("Can't find " ++ str, "")) . find ((==str) . fst)
+parsePerson = undefined
               
 
 -- wrong Parse | empty string
@@ -234,6 +188,7 @@ t9 = parsePerson "firstName = Barbarian\nlastName = Conn Or"
 -- wrong Parse | empty major value
 t10 = parsePerson "firstName = John\nlastName = Connor\nage = "
 -- wrong Parse | no spaces around = on the right in major field
+
 t11 = parsePerson "firstName = John\nlastName = Connor\nage ="
 -- wrong Parse | empty key, missing major field
 t12 = parsePerson "firstName = John\nlastName = Connor\n = 30"
