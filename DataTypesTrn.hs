@@ -161,8 +161,25 @@ data Error = ParsingError | IncompleteDataError | IncorrectDataError String
 data Person = Person { firstName :: String, lastName :: String, age :: Int }
     deriving (Show, Eq)
 
+lstKeys = ["firstName", "lastName", "age"]
+
+type PersonParams = [String]
+
+checkFormat :: String -> Bool
+checkFormat = undefined
+
+splitPerson :: String -> PersonParams
+splitPerson = undefined
+
 parsePerson :: String -> Either Error Person
-parsePerson = undefined
+parsePerson x | not $ checkFormat x = Left ParsingError
+              | length splitted /= length lstKeys = Left IncompleteDataError
+              | otherwise = Right $ makePerson splitted
+    where
+        splitted :: PersonParams
+        splitted = splitPerson x
+        makePerson :: PersonParams -> Person
+        makePerson = undefined
               
 
 -- wrong Parse | empty string
