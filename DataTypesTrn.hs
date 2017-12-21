@@ -178,7 +178,7 @@ checkFormat x = length filtered == length splitted
         filtered = filter bothSidesArentEmpty . filter (isInfixOf strEq) $ splitted
         splitted = lines x
         bothSidesArentEmpty :: String -> Bool
-        bothSidesArentEmpty = undefined
+        bothSidesArentEmpty = ( \x -> length (fst x) > 0 && length (snd x) > 0 ) . splitOnEq
 
 splitPerson :: String -> PersonParams
 splitPerson = filter isFLA . map splitOnEq . lines
