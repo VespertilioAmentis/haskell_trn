@@ -175,6 +175,15 @@ checkFormat = undefined
 splitPerson :: String -> PersonParams
 splitPerson = undefined
 
+makePerson :: PersonParams -> Person
+makePerson = undefined
+
+checkAgeFmt :: PersonParams -> Bool
+checkAgeFmt = undefined
+
+extractVal :: String -> PersonParams -> String
+extractVal = undefined
+
 parsePerson :: String -> Either Error Person
 parsePerson x | not $ checkFormat x = Left ParsingError
               | length splitted /= length lstKeys = Left IncompleteDataError
@@ -183,12 +192,6 @@ parsePerson x | not $ checkFormat x = Left ParsingError
     where
         splitted :: PersonParams
         splitted = splitPerson x
-        makePerson :: PersonParams -> Person
-        makePerson = undefined
-        checkAgeFmt :: PersonParams -> Bool
-        checkAgeFmt = undefined
-        extractVal :: String -> PersonParams -> String
-        extractVal = undefined
 
 -- wrong Parse | empty string
 t0 = parsePerson ""
