@@ -177,7 +177,12 @@ checkFormat x = length filtered == length splitted
     
 
 splitPerson :: String -> PersonParams
-splitPerson = undefined
+splitPerson = filter isFLA . splitOnEq . lines
+
+splitOnEq = undefined
+
+isFLA :: (String, String) -> Bool
+isFLA x = (==1) $ length $ filter (==True) $ map (==(fst x)) lstKeys
 
 makePerson :: PersonParams -> Person
 makePerson x = Person {firstName = extractVal fnameKey x,
