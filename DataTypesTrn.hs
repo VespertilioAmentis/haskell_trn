@@ -178,13 +178,15 @@ checkFormat x = length filtered == length splitted
         filtered = filter bothSidesArentEmpty . filter (isInfixOf strEq) $ splitted
         splitted = lines x
         bothSidesArentEmpty :: String -> Bool
-        bothSidesArentEmpty = undefined    
+        bothSidesArentEmpty = undefined
 
 splitPerson :: String -> PersonParams
 splitPerson = filter isFLA . map splitOnEq . lines
 
 splitOnEq :: String -> ParmPair
-splitOnEq = undefined
+splitOnEq =  (\x -> (T.unpack $ fst x, drop (length strEq) $ T.unpack $ snd x) )
+                . T.breakOn (T.pack strEq)
+                . T.pack
 
 isFLA :: (String, String) -> Bool
 isFLA x = (==1) $ length $ filter (==True) $ map (==(fst x)) lstKeys
