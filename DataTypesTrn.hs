@@ -167,7 +167,8 @@ ageKey = "age"
 
 lstKeys = [fnameKey, lnameKey, ageKey]
 
-type PersonParams = [(String, String)]
+type PersonParams = [ParmPair]
+type ParmPair = (String,String)
 
 strEq = " = "
 
@@ -181,6 +182,7 @@ checkFormat x = length filtered == length splitted
 splitPerson :: String -> PersonParams
 splitPerson = filter isFLA . splitOnEq . lines
 
+-- splitOnEq :: String -> ParmPair
 splitOnEq = undefined
 
 isFLA :: (String, String) -> Bool
@@ -197,7 +199,7 @@ checkAgeFmt = all isDigit . extractVal ageKey
 extractVal :: String -> PersonParams -> String
 extractVal str = snd . fromMaybe ("", "") . find (eqls str)
     where
-        eqls :: String -> (String, String) -> Bool
+        eqls :: String -> ParmPair -> Bool
         eqls str = (== str) . fst
 
 parsePerson :: String -> Either Error Person
