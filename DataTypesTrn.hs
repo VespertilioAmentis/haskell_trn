@@ -200,10 +200,7 @@ checkAgeFmt :: PersonParams -> Bool
 checkAgeFmt = all isDigit . extractVal ageKey
 
 extractVal :: String -> PersonParams -> String
-extractVal str = snd . fromMaybe ("", "") . find (eqls str)
-    where
-        eqls :: String -> ParmPair -> Bool
-        eqls str = (== str) . fst
+extractVal str = fromMaybe "" . lookup str
 
 parsePerson :: String -> Either Error Person
 parsePerson x | not $ checkFormat x = Left ParsingError
