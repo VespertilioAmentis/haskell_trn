@@ -4,6 +4,7 @@ import LstTrn
 import Data.List
 import Data.Char(isDigit)
 import Data.Maybe (fromMaybe)
+import qualified Data.Text as T
 
 data Color = Red | Green | Blue
 
@@ -170,7 +171,7 @@ hasSpacedEqSign :: String -> Bool
 hasSpacedEqSign =  isInfixOf spacedEq
 
 filterPerson :: String -> [(String, String)]
-filterPerson =  toTupleList . filter (isFLA) . filter hasSpacedEqSign . lines
+filterPerson =  toTupleList . filter (isFLA) . filter hasSpacedEqSign . lines . stripText
     where
         toTupleList :: [String] -> [(String, String)]
         toTupleList = map trimSnd . map (span (/= ' '))
@@ -178,13 +179,19 @@ filterPerson =  toTupleList . filter (isFLA) . filter hasSpacedEqSign . lines
                 trimSnd x = (fst x, drop (length spacedEq) $ snd x)
         isFLA str = or $ map (`isInfixOf` str) [fname, lname, ageName]
 
+stripText :: String -> String
+stripText = T.unpack . T.strip . T.pack
+
 checkFmt :: String -> Bool
 checkFmt x = 
-    (length eqList == (length $ splitted)) && (all (==3) $ map length $ map words $ splitted)
+    (length eqList == (length $ splitted)) && (and $ map symsFromBoth eqList) && ( (length eqList) > 0)
         where
-            splitted = lines x
+            splitted = lines $ stripText x
             eqList = filter hasSpacedEqSign $ splitted
-        
+            symsFromBoth :: String -> Bool
+            symsFromBoth x = (length (fst spanned) > 0) && (length (snd spanned) > length spacedEq)
+                where
+                        spanned = span (/= ' ') x
         
 
 parsePerson :: String -> Either Error Person
@@ -208,16 +215,14 @@ parsePerson x | not $ checkFmt x = Left ParsingError
 t0 = parsePerson ""
 -- correct
 t1 = parsePerson "firstName = John\nlastName = Connor\nage = 30"
--- correct | shiffled fields
-t18 = parsePerson "lastName = Connor\nfirstName = John\nage = 30"
 -- wrong Parse | no spaces around = in minor fields
 t2 = parsePerson "firstName = John Smith\nlastName = Connor\nage = 30\nasde=as11"
- -- wrong Parse | no spaces around = on the left in minor fields
-t5 = parsePerson "firstName = John Smith\nlastName = Connor\nage = 30\nasde= "
 -- wrong Parse | no spaces around = in major fields
 t3 = parsePerson "firstName=Barbarian\nlastName=Conn On\nage=30"
  -- wrong Incorrect | age is non-numeric
 t4 = parsePerson "firstName = John\nlastName = Connor\nage = as30"
+ -- wrong Parse | no spaces around = on the left in minor fields
+t5 = parsePerson "firstName = John Smith\nlastName = Connor\nage = 30\nasde= "
 -- wrong Parse | no spaces around = in major fields, missing major field
 t6 = parsePerson "firstName=Barbarian\nlastName=Conn Or"
 -- wrong Parse | no spaces around = in major fields, typo in major field
@@ -239,4 +244,37 @@ t14 = parsePerson "firstName = John\nlastName = Con=nor\nage = 30"
 -- wrong Parse | no spaces around =, missing value in minor field
 t15 = parsePerson "firstName=Barbarian\nlastName=Conn On\nage=30\ng dsfsd"
 -- wrong Incomplete | major field key with whitespace, age is non-numeric
-t17 = parsePerson " firstName = John\nlastName = Connor\nage = 2f8 "
+t16 = parsePerson " firstName = John\nlastName = Connor\nage = 2f8 "
+-- correct | shiffled fields
+t17 = parsePerson "lastName = Connor\nfirstName = John\nage = 30"
+
+testToTuple :: (Either Error Person, Either Error Person) -> Int -> (Int, Either Error Person, Either Error Person, Bool)
+testToTuple (sample, parsed) i = (i, sample, parsed, sample == parsed)
+
+runPersonTests :: [(Either Error Person, Either Error Person)] -> Int -> [(Int, Either Error Person, Either Error Person, Bool)]
+runPersonTests [] _ = []
+runPersonTests (x:xs) i = testToTuple x i : runPersonTests xs (i + 1)
+
+listSamplesAndVals = [(Left ParsingError, t0), (Right (Person {firstName = "John", lastName = "Connor", age = 30}), t1),
+                              (Left ParsingError, t2), (Left ParsingError, t3), (Left (IncorrectDataError "as30"), t4),
+                              (Left ParsingError, t5), (Left ParsingError, t6), (Left ParsingError, t7),
+                              (Right (Person{firstName = "John", lastName = "Connor", age = 30}), t8),
+                              (Left IncompleteDataError, t9), (Left ParsingError, t10), (Left ParsingError, t11),
+                              (Left ParsingError, t12),
+                              (Right (Person{firstName = "Barbarian", lastName = "Conn On", age = 30}), t13),
+                              (Right (Person{firstName = "John", lastName = "Con=nor", age = 30}), t14),
+                              (Left ParsingError, t15), (Left $ IncorrectDataError $ "2f8", t16),
+                              (Right (Person{firstName = "John", lastName = "Connor", age = 30}), t17)]
+
+runAllTests :: [(Int, Either Error Person, Either Error Person, Bool)]
+runAllTests = runPersonTests listSamplesAndVals 0
+
+testToShortTuple :: (Either Error Person, Either Error Person) -> Int -> (Int, Bool)
+testToShortTuple (sample, parsed) i = (i, sample == parsed)
+
+runPersonFastTests :: [(Either Error Person, Either Error Person)] -> Int -> [(Int, Bool)]
+runPersonFastTests [] _ = []
+runPersonFastTests (x:xs) i = testToShortTuple x i : runPersonFastTests xs (i + 1)
+
+runFastTests :: [(Int, Bool)]
+runFastTests = runPersonFastTests listSamplesAndVals 0
