@@ -169,10 +169,12 @@ lstKeys = [fnameKey, lnameKey, ageKey]
 
 type PersonParams = [(String, String)]
 
+strEq = " = "
+
 checkFormat :: String -> Bool
 checkFormat x = length filtered == length splitted
     where
-        filtered = filter (isInfixOf " = ") $ splitted
+        filtered = filter (isInfixOf strEq) $ splitted
         splitted = lines x
     
 
