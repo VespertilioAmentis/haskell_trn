@@ -181,7 +181,7 @@ makePerson x = Person {firstName = extractVal fnameKey x,
                        age = read (extractVal ageKey x) :: Int}
 
 checkAgeFmt :: PersonParams -> Bool
-checkAgeFmt = undefined
+checkAgeFmt = all isDigit . extractVal ageKey
 
 extractVal :: String -> PersonParams -> String
 extractVal = undefined
