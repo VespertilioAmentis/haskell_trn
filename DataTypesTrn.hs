@@ -161,55 +161,58 @@ data Error = ParsingError | IncompleteDataError | IncorrectDataError String
 data Person = Person { firstName :: String, lastName :: String, age :: Int }
     deriving (Show, Eq)
 
-ageName = "age"
-fname = "firstName"
-lname = "lastName"
+fnameKey = "firstName"
+lnameKey = "lastName"
+ageKey = "age"
 
-spacedEq = " = "
+lstKeys = [fnameKey, lnameKey, ageKey]
 
-hasSpacedEqSign :: String -> Bool
-hasSpacedEqSign =  isInfixOf spacedEq
+type PersonParams = [ParmPair]
+type ParmPair = (String,String)
 
-filterPerson :: String -> [(String, String)]
-filterPerson =  toTupleList . filter (isFLA) . filter hasSpacedEqSign . lines . stripText
+strEq = " = "
+
+checkFormat :: String -> Bool
+checkFormat x = length filtered == length splitted && length filtered > 0
     where
-        toTupleList :: [String] -> [(String, String)]
-        toTupleList = map trimSnd . map (span (/= ' '))
-            where
-                trimSnd x = (fst x, drop (length spacedEq) $ snd x)
-        isFLA str = or $ map (`isInfixOf` str) [fname, lname, ageName]
+        filtered = filter bothSidesArentEmpty . filter (isInfixOf strEq) $ splitted
+        splitted = lines x
+        bothSidesArentEmpty :: String -> Bool
+        bothSidesArentEmpty = ( \x -> length (fst x) > 0 && length (snd x) > 0 ) . splitOnEq
 
-stripText :: String -> String
-stripText = T.unpack . T.strip . T.pack
+splitPerson :: String -> PersonParams
+splitPerson = filter isFLA . map splitOnEq . lines
 
-checkFmt :: String -> Bool
-checkFmt x = 
-    (length eqList == (length $ splitted)) && (and $ map symsFromBoth eqList) && ( (length eqList) > 0)
-        where
-            splitted = lines $ stripText x
-            eqList = filter hasSpacedEqSign $ splitted
-            symsFromBoth :: String -> Bool
-            symsFromBoth x = (length (fst spanned) > 0) && (length (snd spanned) > length spacedEq)
-                where
-                        spanned = span (/= ' ') x
-        
+splitOnEq :: String -> ParmPair
+splitOnEq =  (\x -> (T.unpack $ fst x, drop (length strEq) $ T.unpack $ snd x) )
+                . T.breakOn (T.pack strEq)
+                . T.pack
+
+isFLA :: (String, String) -> Bool
+isFLA x = (==1) $ length $ filter (==True) $ map (==(fst x)) lstKeys
+
+makePerson :: PersonParams -> Person
+makePerson x = Person {firstName = extractVal fnameKey x,
+                       lastName = extractVal lnameKey x,
+                       age = read (extractVal ageKey x) :: Int}
+
+checkAgeFmt :: PersonParams -> Bool
+checkAgeFmt = all isDigit . extractVal ageKey
+
+extractVal :: String -> PersonParams -> String
+extractVal str = snd . fromMaybe ("", "") . find (eqls str)
+    where
+        eqls :: String -> ParmPair -> Bool
+        eqls str = (== str) . fst
 
 parsePerson :: String -> Either Error Person
-parsePerson x | not $ checkFmt x = Left ParsingError
-              | (length $ filterPerson x) < 3 = Left IncompleteDataError
-              | otherwise = makePerson $ orderVals $ filterPerson x
+parsePerson x | not $ checkFormat x = Left ParsingError
+              | length splitted /= length lstKeys = Left IncompleteDataError
+              | not $ checkAgeFmt splitted = Left $ IncorrectDataError $ extractVal ageKey $ splitted
+              | otherwise = Right $ makePerson splitted
     where
-        makePerson :: [String] -> Either Error Person
-        makePerson x | not $ all isDigit $ x !! 2 = Left $ IncorrectDataError $ x !! 2
-                     | otherwise = Right $ Person {firstName = x !! 0,
-                                                   lastName = x !! 1,
-                                                   age = read (x !! 2) :: Int}
-        orderVals :: [(String, String)] -> [String]
-        orderVals x = [findByStr fname x, findByStr lname x, findByStr ageName x]
-            where
-                findByStr :: String -> [(String, String)] -> String
-                findByStr str = snd . fromMaybe (("Can't find " ++ str, "")) . find ((==str) . fst)
-              
+        splitted :: PersonParams
+        splitted = splitPerson x
 
 -- wrong Parse | empty string
 t0 = parsePerson ""
@@ -234,6 +237,7 @@ t9 = parsePerson "firstName = Barbarian\nlastName = Conn Or"
 -- wrong Parse | empty major value
 t10 = parsePerson "firstName = John\nlastName = Connor\nage = "
 -- wrong Parse | no spaces around = on the right in major field
+
 t11 = parsePerson "firstName = John\nlastName = Connor\nage ="
 -- wrong Parse | empty key, missing major field
 t12 = parsePerson "firstName = John\nlastName = Connor\n = 30"
@@ -243,10 +247,8 @@ t13 = parsePerson "firstName = Barbarian\nlastName = Conn On\nage = 30"
 t14 = parsePerson "firstName = John\nlastName = Con=nor\nage = 30"
 -- wrong Parse | no spaces around =, missing value in minor field
 t15 = parsePerson "firstName=Barbarian\nlastName=Conn On\nage=30\ng dsfsd"
--- wrong Incomplete | major field key with whitespace, age is non-numeric
-t16 = parsePerson " firstName = John\nlastName = Connor\nage = 2f8 "
 -- correct | shiffled fields
-t17 = parsePerson "lastName = Connor\nfirstName = John\nage = 30"
+t16 = parsePerson "lastName = Connor\nfirstName = John\nage = 30"
 
 testToTuple :: (Either Error Person, Either Error Person) -> Int -> (Int, Either Error Person, Either Error Person, Bool)
 testToTuple (sample, parsed) i = (i, sample, parsed, sample == parsed)
@@ -263,8 +265,7 @@ listSamplesAndVals = [(Left ParsingError, t0), (Right (Person {firstName = "John
                               (Left ParsingError, t12),
                               (Right (Person{firstName = "Barbarian", lastName = "Conn On", age = 30}), t13),
                               (Right (Person{firstName = "John", lastName = "Con=nor", age = 30}), t14),
-                              (Left ParsingError, t15), (Left $ IncorrectDataError $ "2f8", t16),
-                              (Right (Person{firstName = "John", lastName = "Connor", age = 30}), t17)]
+                              (Left ParsingError, t15), (Left $ IncorrectDataError $ "2f8", t16)]
 
 runAllTests :: [(Int, Either Error Person, Either Error Person, Bool)]
 runAllTests = runPersonTests listSamplesAndVals 0
