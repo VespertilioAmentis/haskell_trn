@@ -175,9 +175,10 @@ strEq = " = "
 checkFormat :: String -> Bool
 checkFormat x = length filtered == length splitted
     where
-        filtered = filter (isInfixOf strEq) $ splitted
+        filtered = filter bothSidesArentEmpty . filter (isInfixOf strEq) $ splitted
         splitted = lines x
-    
+        bothSidesArentEmpty :: String -> Bool
+        bothSidesArentEmpty = undefined    
 
 splitPerson :: String -> PersonParams
 splitPerson = filter isFLA . map splitOnEq . lines
