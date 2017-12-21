@@ -196,7 +196,7 @@ extractVal :: String -> PersonParams -> String
 extractVal str = snd . fromMaybe ("", "") . find (eqls str)
     where
         eqls :: String -> (String, String) -> Bool
-        eqls str x = fst x == str
+        eqls str = (== str) . fst
 
 parsePerson :: String -> Either Error Person
 parsePerson x | not $ checkFormat x = Left ParsingError
