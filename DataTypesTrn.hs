@@ -176,7 +176,9 @@ splitPerson :: String -> PersonParams
 splitPerson = undefined
 
 makePerson :: PersonParams -> Person
-makePerson = undefined
+makePerson x = Person {firstName = extractVal fnameKey x,
+                       lastName = extractVal lnameKey x,
+                       age = read (extractVal ageKey x) :: Int}
 
 checkAgeFmt :: PersonParams -> Bool
 checkAgeFmt = undefined
