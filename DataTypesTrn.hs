@@ -193,7 +193,7 @@ checkAgeFmt :: PersonParams -> Bool
 checkAgeFmt = all isDigit . extractVal ageKey
 
 extractVal :: String -> PersonParams -> String
-extractVal str x = snd $ fromMaybe ("", "") $ find (eqls str) x
+extractVal str = snd . fromMaybe ("", "") . find (eqls str)
     where
         eqls :: String -> (String, String) -> Bool
         eqls str x = fst x == str
