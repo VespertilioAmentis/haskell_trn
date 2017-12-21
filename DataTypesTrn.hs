@@ -180,9 +180,9 @@ checkFormat x = length filtered == length splitted
     
 
 splitPerson :: String -> PersonParams
-splitPerson = filter isFLA . splitOnEq . lines
+splitPerson = filter isFLA . map splitOnEq . lines
 
--- splitOnEq :: String -> ParmPair
+splitOnEq :: String -> ParmPair
 splitOnEq = undefined
 
 isFLA :: (String, String) -> Bool
