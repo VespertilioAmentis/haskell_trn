@@ -167,7 +167,7 @@ ageKey = "age"
 
 lstKeys = [fnameKey, lnameKey, ageKey]
 
-type PersonParams = [String]
+type PersonParams = [(String, String)]
 
 checkFormat :: String -> Bool
 checkFormat = undefined
