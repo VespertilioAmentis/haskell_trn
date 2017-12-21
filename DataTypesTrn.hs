@@ -173,7 +173,7 @@ type ParmPair = (String,String)
 strEq = " = "
 
 checkFormat :: String -> Bool
-checkFormat x = length filtered == length splitted
+checkFormat x = length filtered == length splitted && length filtered > 0
     where
         filtered = filter bothSidesArentEmpty . filter (isInfixOf strEq) $ splitted
         splitted = lines x
@@ -247,10 +247,8 @@ t13 = parsePerson "firstName = Barbarian\nlastName = Conn On\nage = 30"
 t14 = parsePerson "firstName = John\nlastName = Con=nor\nage = 30"
 -- wrong Parse | no spaces around =, missing value in minor field
 t15 = parsePerson "firstName=Barbarian\nlastName=Conn On\nage=30\ng dsfsd"
--- wrong Incomplete | major field key with whitespace, age is non-numeric
-t16 = parsePerson " firstName = John\nlastName = Connor\nage = 2f8 "
 -- correct | shiffled fields
-t17 = parsePerson "lastName = Connor\nfirstName = John\nage = 30"
+t16 = parsePerson "lastName = Connor\nfirstName = John\nage = 30"
 
 testToTuple :: (Either Error Person, Either Error Person) -> Int -> (Int, Either Error Person, Either Error Person, Bool)
 testToTuple (sample, parsed) i = (i, sample, parsed, sample == parsed)
@@ -267,8 +265,7 @@ listSamplesAndVals = [(Left ParsingError, t0), (Right (Person {firstName = "John
                               (Left ParsingError, t12),
                               (Right (Person{firstName = "Barbarian", lastName = "Conn On", age = 30}), t13),
                               (Right (Person{firstName = "John", lastName = "Con=nor", age = 30}), t14),
-                              (Left ParsingError, t15), (Left $ IncorrectDataError $ "2f8", t16),
-                              (Right (Person{firstName = "John", lastName = "Connor", age = 30}), t17)]
+                              (Left ParsingError, t15), (Left $ IncorrectDataError $ "2f8", t16)]
 
 runAllTests :: [(Int, Either Error Person, Either Error Person, Bool)]
 runAllTests = runPersonTests listSamplesAndVals 0
