@@ -36,8 +36,6 @@ revRange (x,y) = unfoldr g y
     where
         g :: Char -> Maybe (Char, Char)
         g y | y > pred x = Just (y, pred y)
-
-
             | otherwise = Nothing
 
 revTest1 = revRange ('a', 'z') == "zyxwvutsrqponmlkjihgfedcba"
@@ -48,9 +46,15 @@ revTest5 = revRange ('A', 'Z') == "ZYXWVUTSRQPONMLKJIHGFEDCBA"
 
 allRevTests = testAll [revTest1, revTest2, revTest3, revTest4, revTest5]
 
-coins = [2, 3, 7]
+coins = [7, 3, 2, 1]
 
 change :: (Ord a, Num a) => a -> [[a]]
 change y = [x | x <- undefined, sum x == y]
 
+makeExch :: (Num a, Ord a) => [a] -> [a] -> a -> [a]
+makeExch acc _ 0 = acc
+makeExch acc [] _ = acc
+makeExch acc vals@(v:vs) exchbl | exchbl == 0 = acc
+                                | exchbl - v < 0 = makeExch acc vs exchbl
+                                | otherwise = makeExch (v : acc) vals (exchbl - v)
 
