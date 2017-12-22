@@ -339,3 +339,6 @@ avg t =
     go :: Tree Int -> (Int,Int)
     go (Leaf x) = (1, x)
     go (Node x y) = (\z r -> (fst z + fst r, snd z + snd r)) (go x) (go y)
+
+-----------------------------------------------------------
+
