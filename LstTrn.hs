@@ -36,6 +36,8 @@ revRange (x,y) = unfoldr g y
     where
         g :: Char -> Maybe (Char, Char)
         g y | y > pred x = Just (y, pred y)
+
+
             | otherwise = Nothing
 
 revTest1 = revRange ('a', 'z') == "zyxwvutsrqponmlkjihgfedcba"
@@ -45,5 +47,10 @@ revTest4 = revRange ('j', 't') == "tsrqponmlkj"
 revTest5 = revRange ('A', 'Z') == "ZYXWVUTSRQPONMLKJIHGFEDCBA"
 
 allRevTests = testAll [revTest1, revTest2, revTest3, revTest4, revTest5]
+
+coins = [2, 3, 7]
+
+change :: (Ord a, Num a) => a -> [[a]]
+change y = [x | x <- undefined, sum x == y]
 
 
