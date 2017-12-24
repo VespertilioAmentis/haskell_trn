@@ -354,7 +354,6 @@ newtype Maybe' a = Maybe' { getMaybe :: Maybe a }
 
 instance Monoid a => Monoid (Maybe' a) where
     mempty = Maybe' $ Just mempty
-    mappend _ (Maybe' Nothing) = Maybe' Nothing
-    mappend (Maybe' Nothing) _ = Maybe' Nothing
     mappend (Maybe' (Just a)) (Maybe' (Just b)) = Maybe' $ Just $ a `mappend` b
+    mappend _ _ = Maybe' Nothing
 
