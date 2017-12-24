@@ -30,6 +30,12 @@ instance MapLike ListMap where
 
 newtype ArrowMap k v = ArrowMap { getArrowMap :: k -> Maybe v }
 
+instance MapLike ArrowMap where
+    empty = ArrowMap $ \_ -> Nothing
+    lookup = undefined
+    insert = undefined
+    delete = undefined
+
 -----------------------------------------------
 
 infixl 6 :+:
