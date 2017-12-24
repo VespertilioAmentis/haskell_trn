@@ -342,3 +342,19 @@ avg t =
 
 -----------------------------------------------------------
 
+newtype Xor = Xor { getXor :: Bool }
+    deriving (Eq,Show)
+
+instance Monoid Xor where
+    mempty = Xor (False)
+    mappend (Xor a) (Xor b) = Xor(not a && b || a && not b)
+
+newtype Maybe' a = Maybe' { getMaybe :: Maybe a }
+    deriving (Eq,Show)
+
+instance Monoid a => Monoid (Maybe' a) where
+    mempty = Maybe' $ Just mempty
+    mappend _ (Maybe' Nothing) = Maybe' Nothing
+    mappend (Maybe' Nothing) _ = Maybe' Nothing
+    mappend (Maybe' (Just a)) (Maybe' (Just b)) = Maybe' $ Just $ a `mappend` b
+
