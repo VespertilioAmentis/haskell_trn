@@ -28,16 +28,15 @@ instance MapLike ListMap where
             safetail a = tail a
     insert x y = ListMap . ((x,y):) . getListMap . delete x
 
-fn k = if k < 5 then Nothing else Just "qwerqwre"
-arrmap = ArrowMap fn
-
 newtype ArrowMap k v = ArrowMap { getArrowMap :: k -> Maybe v }
+
+insertMaybe k v a = ArrowMap $ \x -> if x == k then v else (getArrowMap a) x 
 
 instance MapLike ArrowMap where
     empty = ArrowMap $ \_ -> Nothing
     lookup k m = getArrowMap m $ k
-    insert k v a = ArrowMap $ \x -> if x == k then Just v else (getArrowMap a) x
-    delete ky whr = undefined
+    insert k v a = insertMaybe k (Just v) a
+    delete k a = insertMaybe k Nothing a
 
 -----------------------------------------------
 
