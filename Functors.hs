@@ -24,7 +24,7 @@ data Entry k1 k2 v = Entry (k1, k2) v  deriving Show
 data Map k1 k2 v = Map [Entry k1 k2 v]  deriving Show
 
 instance Functor (Entry k1 k2) where
-    fmap = undefined
+    fmap f (Entry x y) = Entry x $ f y
 
 instance Functor (Map k1 k2) where
-    fmap = undefined
+    fmap f (Map lst) = Map $ map (fmap f) lst
