@@ -12,14 +12,14 @@ execLoggers :: a -> (a -> Log b) -> (b -> Log c) -> Log c
 execLoggers parm fn1 fn2 = undefined
 
 data SomeType a = SomeType a
+    deriving Show
 
 instance Applicative SomeType where
     pure = SomeType
     (<*>) = undefined
 
 instance Monad SomeType where
-    (>>=) = undefined
-
+    (>>=) (SomeType x) fn = fn x
 
 instance Functor SomeType where
-    fmap f x = undefined
+    fmap f x = x >>= (return . f)
