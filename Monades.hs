@@ -20,6 +20,22 @@ bindLog :: Log a -> (a -> Log b) -> Log b
 bindLog (Log msgs val) fn = 
     case fn val of Log msg val -> Log (msgs ++ msg) val
 
+instance Applicative Log where
+    pure = returnLog
+    (<*>) = undefined
+
+instance Functor Log where
+    fmap = undefined
+
+instance Monad Log where
+    return = returnLog
+    (>>=) = bindLog
+
+execLoggersList :: a -> [a -> Log a] -> Log a
+execLoggersList = undefined
+
+-------------------------------
+
 data SomeType a = SomeType a
     deriving Show
 
