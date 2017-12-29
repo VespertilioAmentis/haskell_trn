@@ -1,6 +1,7 @@
 module LstTrn (testAll) where
 
 import Data.List
+import Data.Maybe
 
 testAll :: [Bool] -> [(Int, Bool)]
 testAll = zip [1..]
@@ -46,15 +47,19 @@ revTest5 = revRange ('A', 'Z') == "ZYXWVUTSRQPONMLKJIHGFEDCBA"
 
 allRevTests = testAll [revTest1, revTest2, revTest3, revTest4, revTest5]
 
+coins :: (Ord a, Num a) => [a]
 coins = [7, 3, 2, 1]
 
+getMaxLen = (`div` (minimum coins))
+
+nextCoin :: (Ord a, Num a) => a -> a
+nextCoin x = fromMaybe 0 $ find (<= x) coins
+
+exHpr :: (Ord a, Num a) => a -> [a]
+exHpr x = nextCoin x : exHpr (x - nextCoin x)
+        
+
 change :: (Ord a, Num a) => a -> [[a]]
-change y = [x | x <- undefined, sum x == y]
-
-makeExch :: (Num a, Ord a) => [a] -> [a] -> a -> [a]
-makeExch acc _ 0 = acc
-makeExch acc [] _ = acc
-makeExch acc vals@(v:vs) exchbl | exchbl == 0 = acc
-                                | exchbl - v < 0 = makeExch acc vs exchbl
-                                | otherwise = makeExch (v : acc) vals (exchbl - v)
-
+change y = [x | x <- exchHelper y, sum x == y]
+    where
+        exchHelper = undefined
