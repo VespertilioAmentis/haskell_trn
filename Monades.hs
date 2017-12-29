@@ -6,15 +6,15 @@ data Log a = Log [String] a
 returnLog :: a -> Log a
 returnLog = Log []
 
-decompose (Log x y) = (x,y)
-
 toLogger :: (a -> b) -> String -> (a -> Log b)
 toLogger fn msg = Log ([msg]) . fn
 
 execLoggers :: a -> (a -> Log b) -> (b -> Log c) -> Log c
-execLoggers parm fn1 fn2 = fn2 $ extractVal $ fn1 parm
-    where
-        extractVal (Log _ x) = x
+execLoggers parm fn1 fn2 =
+    case fn1 parm of
+        Log x y ->
+                case fn2 y of
+                    Log z w -> Log (x ++ z) w
 
 data SomeType a = SomeType a
     deriving Show
