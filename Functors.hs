@@ -17,3 +17,14 @@ data Tree a = Leaf (Maybe a) | Branch (Tree a) (Maybe a) (Tree a) deriving Show
 instance Functor Tree where
     fmap f (Leaf x) = Leaf $ fmap f x
     fmap f (Branch x y z) = Branch (fmap f x) (fmap f y) (fmap f z)
+
+-------------------------------------------------------------------
+
+data Entry k1 k2 v = Entry (k1, k2) v  deriving Show
+data Map k1 k2 v = Map [Entry k1 k2 v]  deriving Show
+
+instance Functor (Entry k1 k2) where
+    fmap = undefined
+
+instance Functor (Map k1 k2) where
+    fmap = undefined
