@@ -22,4 +22,4 @@ instance Monad SomeType where
     (>>=) (SomeType x) fn = fn x
 
 instance Functor SomeType where
-    fmap f x = x >>= (return . f)
+    fmap f = ( >>= return . f )
