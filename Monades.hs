@@ -1,7 +1,7 @@
 module Monades where
 
 data Log a = Log [String] a
-    deriving Show
+    deriving (Eq,Show)
 
 returnLog :: a -> Log a
 returnLog = Log []
@@ -33,6 +33,14 @@ instance Monad Log where
 
 execLoggersList :: a -> [a -> Log a] -> Log a
 execLoggersList = undefined
+
+exLgTestFn = execLoggersList (3 :: Int) [toLogger (+1) "added one",
+                                         toLogger (*2) "multiplied by 2",
+                                         toLogger (*100) "multiplied by 100"]
+
+sampleVal = Log ["added one","multiplied by 2","multiplied by 100"] 800
+
+exLgTest = exLgTestFn == sampleVal
 
 -------------------------------
 
