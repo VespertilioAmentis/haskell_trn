@@ -16,6 +16,10 @@ execLoggers parm fn1 fn2 =
                 case fn2 y of
                     Log z w -> Log (x ++ z) w
 
+bindLog :: Log a -> (a -> Log b) -> Log b
+bindLog (Log msgs val) fn = 
+    case fn val of Log msg val -> Log (msgs ++ msg) val
+
 data SomeType a = SomeType a
     deriving Show
 
