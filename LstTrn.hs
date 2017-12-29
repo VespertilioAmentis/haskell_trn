@@ -52,12 +52,15 @@ coins = [7, 3, 2, 1]
 
 getMaxLen = (`div` (minimum coins))
 
-nextCoin :: (Ord a, Num a) => a -> a
-nextCoin x = fromMaybe (0) $ find (<= x) coins
+nextCoin :: (Ord a, Num a) => a -> a -> a
+nextCoin fstcoin x = fromMaybe (0) $ find (<= min fstcoin x) coins
 
-exHpr :: (Ord a, Num a) => a -> [a]
-exHpr 0 = []
-exHpr x = nextCoin x : exHpr (x - nextCoin x)
+exHpr :: (Ord a, Num a) => a -> a -> [a]
+exHpr _ 0 = []
+exHpr fstcoin x = nextCoin fstcoin x : exHpr fstcoin (x - nextCoin fstcoin x)
+
+getAllExprs [] _ = [[]]
+getAllExprs (c:cs) x = exHpr c x : getAllExprs cs x
 
 change :: (Ord a, Num a) => a -> [[a]]
 change y = [x | x <- exchHelper y, sum x == y]
