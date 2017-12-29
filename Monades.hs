@@ -32,7 +32,7 @@ instance Monad Log where
     (>>=) = bindLog
 
 execLoggersList :: a -> [a -> Log a] -> Log a
-execLoggersList initval lst = foldl (>>=) (return initval) lst
+execLoggersList initval = foldl (>>=) (return initval)
 
 exLgTestFn = execLoggersList (3 :: Int) [toLogger (+1) "added one",
                                          toLogger (*2) "multiplied by 2",
