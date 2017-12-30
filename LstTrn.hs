@@ -66,4 +66,4 @@ getAllExprs (c:cs) x = exHpr c x : getAllExprs cs x
 change :: (Ord a, Num a) => a -> [[a]]
 change y = [x | x <- exchHelper y, sum x == y]
     where
-        exchHelper = undefined
+        exchHelper = getAllExprs coins
