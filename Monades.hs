@@ -1,5 +1,8 @@
 module Monades where
 
+import Data.Char
+import Control.Monad
+
 data Log a = Log [String] a
     deriving (Eq,Show)
 
@@ -28,7 +31,7 @@ instance Functor Log where
     fmap = undefined
 
 instance Monad Log where
-    return = returnLog
+    return = Log ["Log start"]
     (>>=) = bindLog
 
 execLoggersList :: a -> [a -> Log a] -> Log a
@@ -56,3 +59,31 @@ instance Monad SomeType where
 
 instance Functor SomeType where
     fmap f = ( >>= return . f )
+
+-------------------------------
+
+data Token = Number Int | Plus | Minus | LeftBrace | RightBrace     
+    deriving (Eq, Show)
+
+asToken :: String -> Maybe Token
+asToken x =
+    case x of
+        "(" -> Just LeftBrace
+        ")" -> Just RightBrace
+        "+" -> Just Plus
+        "-" -> Just Minus
+        x -> if all isDigit x then Just $ Number $ (read x :: Int) else Nothing
+
+tokenize :: String -> Maybe [Token]
+tokenize = sequence . map (asToken) . words
+
+-------------------------------
+
+data Board = Board
+
+nextPositions :: Board -> [Board]
+nextPositions = undefined
+
+nextPositionsN :: Board -> Int -> (Board -> Bool) -> [Board]
+nextPositionsN b n pred = do undefined
+
