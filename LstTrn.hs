@@ -48,7 +48,7 @@ revTest5 = revRange ('A', 'Z') == "ZYXWVUTSRQPONMLKJIHGFEDCBA"
 allRevTests = testAll [revTest1, revTest2, revTest3, revTest4, revTest5]
 
 coins :: (Ord a, Num a) => [a]
-coins = [7, 3, 2, 1]
+coins = [7, 3, 2]
 
 getMaxLen = (`div` (minimum coins))
 
@@ -57,7 +57,8 @@ nextCoin fstcoin x = fromMaybe (0) $ find (<= min fstcoin x) coins
 
 exHpr :: (Ord a, Num a) => a -> a -> [a]
 exHpr _ 0 = []
-exHpr fstcoin x = nextCoin fstcoin x : exHpr fstcoin (x - nextCoin fstcoin x)
+exHpr fstcoin x | x >= minimum coins = nextCoin fstcoin x : exHpr fstcoin (x - nextCoin fstcoin x)
+                | otherwise = []
 
 getAllExprs [] _ = [[]]
 getAllExprs (c:cs) x = exHpr c x : getAllExprs cs x
