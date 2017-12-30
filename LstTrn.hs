@@ -57,8 +57,10 @@ nextCoin fstcoin x = fromMaybe (0) $ find (<= min fstcoin x) coins
 
 exHpr :: (Ord a, Num a) => a -> a -> [a]
 exHpr _ 0 = []
-exHpr fstcoin x | x >= minimum coins = nextCoin fstcoin x : exHpr fstcoin (x - nextCoin fstcoin x)
+exHpr fstcoin x | x >= minimum coins = nextc : exHpr fstcoin (x - nextc)
                 | otherwise = []
+    where
+        nextc = nextCoin fstcoin x
 
 getAllExprs [] _ = [[]]
 getAllExprs (c:cs) x = exHpr c x : getAllExprs cs x
