@@ -122,6 +122,11 @@ main'' = do
 
 -------------------------------
 
+warnAboutRmAndRm :: FilePath -> IO ()
+warnAboutRmAndRm fph = do 
+    putStrLn ("Removing file: " ++ fph)
+    removeFile fph
+
 main' :: IO ()
 main' = do
     putStr "Substring: "
@@ -131,5 +136,4 @@ main' = do
     else do
         lst_fph <- getDirectoryContents "."
         filtrd <- return $ filter (isInfixOf substr) lst_fph
-        mapM_ putStrLn filtrd
-        return ()
+        mapM_ warnAboutRmAndRm filtrd
