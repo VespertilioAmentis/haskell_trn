@@ -85,5 +85,22 @@ nextPositions :: Board -> [Board]
 nextPositions = undefined
 
 nextPositionsN :: Board -> Int -> (Board -> Bool) -> [Board]
-nextPositionsN b n pred = do undefined
+nextPositionsN b 0 pred = if pred b then [b] else []
+nextPositionsN b n pred | n < 0 = []
+                        | otherwise = do
+    x <- nextPositions b
+    y <- nextPositionsN x (n - 1) pred
+    return y
 
+-------------------------------
+
+pythagoreanTriple :: Int -> [(Int, Int, Int)]
+pythagoreanTriple x = do
+    True <- return (x > 0)
+    k <- [1..x]
+    y <- [2..x]
+    z <- [3..x]
+    True <- return (k < y && y < z)
+    True <- return (z <= x)
+    True <- return (k ^ 2 + y ^ 2 == z ^ 2)
+    return (k, y, z)
