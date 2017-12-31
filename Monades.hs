@@ -2,6 +2,8 @@ module Monades where
 
 import Data.Char
 import Control.Monad
+import System.Directory
+import Data.List (isInfixOf)
 
 data Log a = Log [String] a
     deriving (Eq,Show)
@@ -110,8 +112,24 @@ pythagoreanTriple x = do
 main :: IO ()
 main = main'
 
-main' :: IO ()
-main' = do
+-------------------------------
+
+main'' :: IO ()
+main'' = do
     putStr "What is your name?\nName: "
     name <- getLine
     if length name == 0 then main' else putStrLn $ "Hi, " ++ name ++ "!"
+
+-------------------------------
+
+main' :: IO ()
+main' = do
+    putStr "Substring: "
+    substr <- getLine
+    if null substr then
+        putStrLn "Canceled"
+    else do
+        lst_fph <- getDirectoryContents "."
+        filtrd <- return $ filter (isInfixOf substr) lst_fph
+        mapM_ putStrLn filtrd
+        return ()
